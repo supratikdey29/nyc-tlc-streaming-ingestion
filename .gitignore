@@ -1,9 +1,24 @@
+# -----------------------------
 # Python
+# -----------------------------
 __pycache__/
 *.py[cod]
-*.egg-info/
+*$py.class
+
+# Virtual Environment
 .venv/
 venv/
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
 
 # IDE
 .vscode/
@@ -14,15 +29,15 @@ venv/
 Thumbs.db
 
 # Databricks
-.databricks/
+.dbx/
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
+# Spark
+spark-warehouse/
+.metastore_db/
 
 # Logs
 *.log
 
-# Environment
-.env
+# Temporary
+*.tmp
+*.swp
