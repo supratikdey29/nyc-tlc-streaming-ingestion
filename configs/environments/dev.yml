@@ -1,0 +1,5 @@
+environment: dev
+catalog: deltalake_dev
+checkpoint_root: /Volumes/deltalake_dev/checkpoints
+audit_schema: framework_audit
+log_level: INFO

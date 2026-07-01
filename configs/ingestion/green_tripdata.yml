@@ -1,0 +1,27 @@
+dataset:
+  name: green_tripdata
+
+source:
+  type: s3
+  path: s3://nyc-tlc-tripdata/Green-Trip-data/
+  format: parquet
+  file_pattern: green_tripdata_*.parquet
+
+target:
+  catalog: deltalake_dev
+  schema: nyc_tlc_bronze
+  table: green_tripdata
+
+streaming:
+  enabled: true
+  trigger: availableNow
+  mode: append
+
+checkpoint:
+  path: /Volumes/deltalake_dev/checkpoints/checkpoint_loc/green_tripdata
+
+schema:
+  mode: infer   # infer | strict | evolve
+
+audit:
+  enabled: true
