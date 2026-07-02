@@ -28,3 +28,5 @@ class BronzePipeline:
         )
 
         ingestor.ingest()
+
+        self.logger.info("Bronze Pipeline completed successfully.")

@@ -1,7 +1,10 @@
 from pathlib import Path
 import argparse
 
+import uuid
 from framework.logging.logger import FrameworkLogger
+
+#from framework.logging.logger import FrameworkLogger
 from framework.configuration.config_loader import ConfigLoader
 from framework.orchestration.pipeline_factory import PipelineFactory
 
@@ -81,6 +84,9 @@ class PipelineRunner:
     ############################################################
 
     def run(self, environment: str, dataset: str):
+
+        run_id = str(uuid.uuid4())[:8]
+        FrameworkLogger.set_run_id(run_id)
 
         logger.info("======================================")
 

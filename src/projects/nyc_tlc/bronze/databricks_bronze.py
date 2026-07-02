@@ -15,7 +15,7 @@ class DatabricksBronzeIngestor:
 
     def ingest(self):
 
-        self.logger.info("Bronze Ingestor Started")
+        self.logger.info("Starting Bronze Ingestion")
 
         self.logger.info(
             "\nBronze Configuration\n"
