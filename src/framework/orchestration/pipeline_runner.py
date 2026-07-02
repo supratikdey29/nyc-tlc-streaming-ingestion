@@ -38,7 +38,21 @@ class PipelineRunner:
         logger.info(config)
 
         # 2. Placeholder for future stages
-        logger.info("[STAGE] Bronze ingestion -> NOT IMPLEMENTED YET")
+        logger.info(
+            f"Starting Bronze ingestion\n"
+            f"source  : {config.source.path}\n"
+            f"Catalog : {config.target.catalog}\n"
+            f"Schema  : {config.target.schema_name}\n"
+            f"Table   : {config.target.table}\n"
+        )
+        
+        from framework.orchestration.pipeline_factory import PipelineFactory
+
+        pipeline = PipelineFactory.get_pipeline(
+            config=config,
+            spark=None
+        )
+        pipeline.execute()
 
         logger.info("[PIPELINE COMPLETE]")
 
