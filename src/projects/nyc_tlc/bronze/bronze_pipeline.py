@@ -1,13 +1,20 @@
 from framework.logging.logger import FrameworkLogger
-from pipelines.nyc_tlc.bronze.databricks_bronze import DatabricksBronzeIngestor
+
+from projects.nyc_tlc.bronze.databricks_bronze import (
+    DatabricksBronzeIngestor
+)
 
 
 class BronzePipeline:
 
     def __init__(self, config, spark=None):
+
         self.config = config
         self.spark = spark
-        self.logger = FrameworkLogger.get_logger("BronzePipeline")
+
+        self.logger = FrameworkLogger.get_logger(
+            "BronzePipeline"
+        )
 
     def execute(self):
 
@@ -20,4 +27,4 @@ class BronzePipeline:
             config=self.config
         )
 
-        ingestor.run()
+        ingestor.ingest()

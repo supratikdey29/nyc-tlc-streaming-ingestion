@@ -1,23 +1,16 @@
-from pipelines.nyc_tlc.bronze.bronze_pipeline import BronzePipeline
+from projects.nyc_tlc.bronze.bronze_pipeline import BronzePipeline
 
 
 class PipelineFactory:
-    """
-    Responsible for returning the correct pipeline implementation
-    based on metadata.
-    """
 
     @staticmethod
-    def get_pipeline(config, spark=None):
+    def get_pipeline(config):
 
-        # Bronze
-        if config.target.schema_name.endswith("_bronze"):
-            return BronzePipeline(config, spark)
+        dataset = config.dataset.name
 
-        # Later...
-        # if config.target.schema_name.endswith("_silver"):
-        #     return SilverPipeline(config, spark)
+        if dataset == "green_tripdata":
+            return BronzePipeline(config)
 
         raise ValueError(
-            f"No pipeline registered for schema {config.target.schema_name}"
+            f"No pipeline found for dataset {dataset}"
         )

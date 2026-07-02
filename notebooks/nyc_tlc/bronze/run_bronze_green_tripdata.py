@@ -1,16 +1,12 @@
-from pipelines.nyc_tlc.bronze.databricks_bronze import DatabricksBronzeIngestor
+from pathlib import Path
 
-source_path = "s3://nyc-tlc-tripdata/Green-Trip-data/"
-checkpoint_path = "/Volumes/deltalake_dev/checkpoints/checkpoint_loc/green_tripdata"
-target_table = "deltalake_dev.nyc_tlc_bronze.green_tripdata"
+from framework.orchestration.pipeline_runner import PipelineRunner
 
-ingestor = DatabricksBronzeIngestor(
-    spark,
-    source_path,
-    checkpoint_path,
-    target_table
+project_root = Path("/Workspace/Repos/supratik.dey29@gmail.com/nyc-tlc-streaming-ingestion")
+
+runner = PipelineRunner(project_root)
+
+runner.run(
+    environment="dev",
+    dataset="green_tripdata"
 )
-
-query = ingestor.run()
-
-query.awaitTermination()

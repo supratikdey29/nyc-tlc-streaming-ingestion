@@ -1,71 +1,124 @@
 from pathlib import Path
-from framework.logging.logger import FrameworkLogger
 import argparse
 
+from framework.logging.logger import FrameworkLogger
 from framework.configuration.config_loader import ConfigLoader
-
+from framework.orchestration.pipeline_factory import PipelineFactory
 
 logger = FrameworkLogger.get_logger("PipelineRunner")
 
-#logger.info("Pipeline started")
 
 class PipelineRunner:
     """
-    Orchestrates ingestion pipelines in a metadata-driven manner.
+    Central orchestration engine.
+
+    Responsibilities:
+        1. Load metadata
+        2. Build pipeline
+        3. Execute pipeline
     """
 
     def __init__(self, project_root: Path):
+
         self.project_root = project_root
+
         self.loader = ConfigLoader(project_root)
 
-    def run(self, environment: str, dataset: str):
-        """
-        Entry point for pipeline execution.
-        """
+        self.config = None
 
-        #logger.info(f"Starting Pipeline execution | environment:{environment} dataset:{dataset}")
+        self.pipeline = None
+
+    ############################################################
+
+    def load_configuration(self, environment: str, dataset: str):
+
         logger.info(
-            f"Starting pipeline execution\n"
+            f"Loading configuration\n"
             f"Environment : {environment}\n"
             f"Dataset     : {dataset}"
         )
 
-
-        # 1. Load configuration
-        config = self.loader.load(environment, dataset)
+        self.config = self.loader.load(environment, dataset)
 
         logger.info("[CONFIGURATION LOADED]")
-        logger.info(config)
 
-        # 2. Placeholder for future stages
+        #logger.info(self.config)
         logger.info(
-            f"Starting Bronze ingestion\n"
-            f"source  : {config.source.path}\n"
-            f"Catalog : {config.target.catalog}\n"
-            f"Schema  : {config.target.schema_name}\n"
-            f"Table   : {config.target.table}\n"
+            "\nPipeline Configuration\n"
+            f"Environment : {environment}\n"
+            f"Dataset     : {self.config.dataset.name}\n"
+            f"Source      : {self.config.source.path}\n"
+            f"Target      : "
+            f"{self.config.target.catalog}."
+            f"{self.config.target.schema_name}."
+            f"{self.config.target.table}"
         )
+
+    ############################################################
+
+    def create_pipeline(self):
+
+        logger.info("Creating pipeline...")
+
+        self.pipeline = PipelineFactory.get_pipeline(self.config)
+
+        logger.info(
+            f"Pipeline created : {type(self.pipeline).__name__}"
+        )
+
+    ############################################################
+
+    def execute_pipeline(self):
+
+        logger.info("Executing pipeline...")
+
+        #pipeline = PipelineFactory.get_pipeline(config)
+
+        self.pipeline.execute()
+
+        logger.info("Pipeline execution completed.")
+
+    ############################################################
+
+    def run(self, environment: str, dataset: str):
+
+        logger.info("======================================")
+
+        logger.info("NYC TLC INGESTION FRAMEWORK")
+
+        logger.info("======================================")
         
-        from framework.orchestration.pipeline_factory import PipelineFactory
+        try:
 
-        pipeline = PipelineFactory.get_pipeline(
-            config=config,
-            spark=None
-        )
-        pipeline.execute()
+            self.load_configuration(environment, dataset)
 
-        logger.info("[PIPELINE COMPLETE]")
+            self.create_pipeline()
+
+            self.execute_pipeline()
+
+            logger.info("Framework completed successfully.")
+        
+        except Exception as ex:
+
+            logger.exception(
+                f"Pipeline execution failed: {str(ex)}"
+            )
+
+            raise
+
+############################################################
 
 
 def main():
-    parser = argparse.ArgumentParser(description="NYC TLC Streaming Pipeline")
 
-    parser.add_argument("--env", required=True, help="Environment (dev/qa/prod)")
-    parser.add_argument("--dataset", required=True, help="Dataset name")
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--env", required=True)
+
+    parser.add_argument("--dataset", required=True)
 
     args = parser.parse_args()
 
-    #project_root = Path(__file__).resolve().parent.parent
     project_root = Path(__file__).resolve().parents[3]
 
     runner = PipelineRunner(project_root)
