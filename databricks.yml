@@ -1,46 +1,63 @@
-# This is a Databricks asset bundle definition for nyc_tlc_streaming_ingestion.
-# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
   name: nyc-tlc-streaming-ingestion
-  uuid: 92954f1f-2c65-4a2d-8bd6-199dbea0ce49
 
 include:
-  - resources/*.yml
+  - deployment/jobs/*.yml
 
 artifacts:
-  python_artifact:
-    type: whl
-    build: uv build --wheel
 
-# Variable declarations. These variables are assigned in the dev/prod targets below.
+  framework:
+
+    type: whl
+
+    build: |
+      python -m pip install --upgrade build
+      python -m build
+
 variables:
+
   catalog:
-    description: The catalog to use
+    description: Unity Catalog
+
   schema:
-    description: The schema to use
+    description: Target Schema
 
 targets:
+
   dev:
-    # The default target uses 'mode: development' to create a development copy.
-    # - Deployed resources get prefixed with '[dev my_user_name]'
-    # - Any job schedules and triggers are paused by default.
-    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
-    mode: development
+
     default: true
+
+    mode: development
+
     workspace:
+
       host: https://dbc-fee1c109-6776.cloud.databricks.com
+
     variables:
+
       catalog: deltalake_dev
-      schema: dev
+
+      schema: nyc_tlc_bronze
+
   prod:
+
     mode: production
+
     workspace:
+
       host: https://dbc-fee1c109-6776.cloud.databricks.com
-      # We explicitly deploy to /Workspace/Users/supratik.dey29@gmail.com to make sure we only have a single copy.
+
       root_path: /Workspace/Users/supratik.dey29@gmail.com/.bundle/${bundle.name}/${bundle.target}
+
     variables:
+
       catalog: deltalake_prod
-      schema: prod
+
+      schema: nyc_tlc_bronze
+
     permissions:
+
       - user_name: supratik.dey29@gmail.com
+
         level: CAN_MANAGE

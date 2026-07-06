@@ -25,11 +25,12 @@ class StreamingConfig(BaseModel):
 
 
 class CheckpointConfig(BaseModel):
-    root: str = Field(alias="path")
+    path: str
 
 
 class SchemaConfig(BaseModel):
     mode: str
+    location:str
 
 
 class AuditConfig(BaseModel):

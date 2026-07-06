@@ -18,10 +18,11 @@ streaming:
   mode: append
 
 checkpoint:
-  path: /Volumes/deltalake_dev/checkpoints/checkpoint_loc/green_tripdata
+  path: /Volumes/deltalake_dev/checkpoints/nyc_tlc/green_tripdata/
 
 schema:
-  mode: infer   # infer | strict | evolve
+  mode: infer  # infer | strict | evolve
+  location: /Volumes/deltalake_dev/schemas/nyc_tlc/green_tripdata/
 
 audit:
   enabled: true

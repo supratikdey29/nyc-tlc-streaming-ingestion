@@ -17,6 +17,10 @@ class FrameworkLogger:
     def set_run_id(cls, run_id: str):
         cls._run_id = run_id
 
+    @classmethod
+    def get_run_id(cls):
+        return cls._run_id
+
     @classmethod    
     def get_logger(cls, component: str):
 
